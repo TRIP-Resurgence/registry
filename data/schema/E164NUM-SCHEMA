@@ -1,0 +1,22 @@
+schema:             E164NUM-SCHEMA
+ref:                tripnet.e164num
+dir-name:           e164num
+key:                e164num     required  single    schema
+key:                prefix      required  single    primary
+key:                netname     required  single
+key:                country     optional  multiple
+key:                descr       optional  single
+key:                status      optional  single    > {ALLOCATED|ASSIGNED} {PI|PA|}
+key:                policy      optional  single    > {open|closed|ask|reserved}
+key:                admin-c     optional  multiple  lookup=tripnet.person,tripnet.role
+key:                tech-c      optional  multiple  lookup=tripnet.person,tripnet.role
+key:                zone-c      optional  multiple  lookup=tripnet.person,tripnet.role
+key:                mnt-by      optional  multiple  lookup=tripnet.mntner
+key:                mnt-lower   optional  multiple  lookup=tripnet.mntner
+key:                mnt-routes  optional  multiple  lookup=tripnet.mntner
+key:                org         optional  single    lookup=tripnet.organisation
+key:                remarks     optional  multiple
+key:                source      required  single    lookup=tripnet.registry
+mnt-by:             TRIPNET-MNT
+source:             TRIPNET
+

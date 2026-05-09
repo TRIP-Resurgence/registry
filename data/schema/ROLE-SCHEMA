@@ -1,0 +1,17 @@
+schema:             ROLE-SCHEMA
+ref:                tripnet.role
+dir-name:           role
+key:                role            required   single    schema
+key:                nic-hdl         required   single    primary
+key:                mnt-by          required   multiple  lookup=tripnet.mntner
+key:                org             optional   multiple  lookup=tripnet.organisation
+key:                admin-c         optional   multiple  lookup=tripnet.person
+key:                tech-c          optional   multiple  lookup=tripnet.person
+key:                abuse-c         optional   multiple  lookup=tripnet.person
+key:                abuse-mailbox   optional   multiple
+key:                descr           optional   single
+key:                remarks         optional   multiple
+key:                source          required   single    lookup=tripnet.registry
+mnt-by:             TRIPNET-MNT
+source:             TRIPNET
+

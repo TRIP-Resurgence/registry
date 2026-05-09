@@ -1,0 +1,16 @@
+schema:             MNTNER-SCHEMA
+ref:                tripnet.mntner
+dir-name:           mntner
+key:                mntner         required  single    primary schema
+key:                descr          optional  single
+key:                mnt-by         required  multiple  lookup=tripnet.mntner
+key:                admin-c        optional  multiple  lookup=tripnet.person,tripnet.role
+key:                tech-c         optional  multiple  lookup=tripnet.person,tripnet.role
+key:                auth           optional  multiple  > [method] [value]...
+key:                org            optional  multiple  lookup=tripnet.organisation
+key:                abuse-mailbox  optional  single
+key:                remarks        optional  multiple
+key:                source         required  single    lookup=tripnet.registry
+mnt-by:             TRIPNET-MNT
+source:             TRIPNET
+

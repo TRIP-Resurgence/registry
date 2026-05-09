@@ -1,0 +1,13 @@
+schema:             REGISTRY-SCHEMA
+ref:                tripnet.registry
+dir-name:           registry
+key:                registry   required  single    primary schema
+key:                url        required  multiple
+key:                descr      optional  multiple
+key:                mnt-by     required  multiple  lookup=tripnet.mntner
+key:                admin-c    optional  multiple  lookup=tripnet.person,tripnet.role
+key:                tech-c     optional  multiple  lookup=tripnet.person,tripnet.role
+key:                source     required  single    lookup=tripnet.registry
+mnt-by:             TRIPNET-MNT
+source:             TRIPNET
+

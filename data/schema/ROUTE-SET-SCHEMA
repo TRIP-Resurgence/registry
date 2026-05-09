@@ -1,0 +1,15 @@
+schema:             ROUTE-SET-SCHEMA
+ref:                tripnet.route-set
+dir-name:           route-set
+key:                route-set    required  single    primary schema
+key:                descr        optional  multiple
+key:                mnt-by       required  multiple  lookup=tripnet.mntner
+key:                members      deprecate multiple
+key:                mbrs-by-ref  optional  multiple  lookup=tripnet.mntner
+key:                admin-c      optional  multiple  lookup=tripnet.person,tripnet.role
+key:                tech-c       optional  multiple  lookup=tripnet.person,tripnet.role
+key:                remarks      optional  multiple
+key:                source       required  single    lookup=tripnet.registry
+mnt-by:             TRIPNET-MNT
+source:             TRIPNET
+

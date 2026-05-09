@@ -1,0 +1,16 @@
+schema:             ROUTE-SCHEMA
+ref:                tripnet.route
+dir-name:           route
+key:                route       required  single    primary schema
+key:                mnt-by      required  multiple  lookup=tripnet.mntner
+key:                origin      required  multiple  lookup=tripnet.itad
+key:                member-of   optional  multiple  lookup=tripnet.route-set
+key:                admin-c     optional  multiple  lookup=tripnet.person,tripnet.role
+key:                tech-c      optional  multiple  lookup=tripnet.person,tripnet.role
+key:                descr       optional  multiple
+key:                remarks     optional  multiple
+key:                source      required  single    lookup=tripnet.registry
+key:                length      optional  single
+mnt-by:             TRIPNET-MNT
+source:             TRIPNET
+

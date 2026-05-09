@@ -1,0 +1,17 @@
+schema:             ITAD-SCHEMA
+ref:                tripnet.itad
+dir-name:           itad
+key:                itad       required  single   primary schema
+key:                itad-name  required  single
+key:                descr      optional  single
+key:                mnt-by     required  multiple lookup=tripnet.mntner
+key:                member-of  optional  multiple lookup=tripnet.route-set
+key:                admin-c    optional  multiple lookup=tripnet.person,tripnet.role
+key:                tech-c     optional  multiple lookup=tripnet.person,tripnet.role
+key:                org        optional  single   lookup=tripnet.organisation
+key:                geo-loc    optional  multiple > [lat-c] [long-c] [name]
+key:                remarks    optional  multiple
+key:                source     required  single    lookup=tripnet.registry
+mnt-by:             TRIPNET-MNT
+source:             TRIPNET
+
