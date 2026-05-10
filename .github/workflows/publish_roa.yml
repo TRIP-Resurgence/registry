@@ -19,13 +19,14 @@ jobs:
       - name: Build static files
         id: build
         run: |
-          ./utils/generate-roa.py .
+          mkdir output
+          ./utils/generate-roa.py . output/tripnet_roa_tripd.txt
 
       - name: Upload static files as artifact
         id: deployment
         uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
         with:
-          path: tripnet_roa_tripd.txt
+          path: output/
 
   # Deployment job
   deploy:
