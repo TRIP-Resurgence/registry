@@ -13,4 +13,3 @@ key:                source      required  single    lookup=tripnet.registry
 key:                length      optional  single
 mnt-by:             TRIPNET-MNT
 source:             TRIPNET
-

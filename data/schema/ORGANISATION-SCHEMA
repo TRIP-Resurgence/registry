@@ -21,4 +21,3 @@ key:                address        optional  multiple
 key:                source         required  single    lookup=tripnet.registry
 mnt-by:             TRIPNET-MNT
 source:             TRIPNET
-

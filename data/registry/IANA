@@ -2,4 +2,3 @@ registry:           IANA
 url:                https://www.iana.org/assignments/trip-parameters/trip-parameters.xml
 mnt-by:             TRIPNET-MNT
 source:             TRIPNET
-

@@ -10,4 +10,3 @@ key:                tech-c     optional  multiple  lookup=tripnet.person,tripnet
 key:                source     required  single    lookup=tripnet.registry
 mnt-by:             TRIPNET-MNT
 source:             TRIPNET
-

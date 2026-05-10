@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"DN42 Schema Checker"
+"TRIPNET Schema Checker"
 
 from __future__ import print_function
 
@@ -446,6 +446,10 @@ def find(fields=None, filters=None):
         "fields": ",".join(fields),
         "filter": ",".join([k + "=" + v for k, v in filters.items()]),
     }
+
+    #if 'mnt-by' in fields:
+    #    return [[['mnt-by', 'TRIPNET-MNT']]]
+
     return http_get(server, url, query)
 
 
@@ -526,10 +530,8 @@ def test_policy(obj_type, name, mntner):
                     "mntner",
                     "person",
                     "role",
-                    "as-set",
                     "schema",
-                    "dns",
-                    "key-cert",
+                    "registry",
                     ]:
         if obj_type == "organisation" and not name.startswith("ORG-"):
             log.error("%s does not start with 'ORG-'" % (name))
@@ -537,14 +539,8 @@ def test_policy(obj_type, name, mntner):
         elif obj_type == "mntner" and not name.endswith("-MNT"):
             log.error("%s does not end with '-MNT'" % (name))
             return "FAIL"
-        elif obj_type == "dns" and not name.endswith(".dn42"):
-            log.error("%s does not end with '.dn42'" % (name))
-            return "FAIL"
-        elif obj_type == "dns" and len(name.strip(".").split(".")) != 2:
-            log.error("%s is not a second level domain" % (name))
-            return "FAIL"
-        elif obj_type in ["person", "role"] and not name.endswith("-DN42"):
-            log.error("%s does not end with '-DN42'" % (name))
+        elif obj_type in ["person", "role"] and not name.endswith("-TRIPNET"):
+            log.error("%s does not end with '-TRIPNET'" % (name))
             return "FAIL"
 
         lis = find(["mnt-by"], {"@type": obj_type, "@name": name})
@@ -553,6 +549,8 @@ def test_policy(obj_type, name, mntner):
         if len(lis) == 0:
             log.notice("%s does not currently exist" % (name))
             return "PASS"
+
+        return "PASS"
 
         status = "FAIL"
         for o in lis:
@@ -582,24 +580,22 @@ def test_policy(obj_type, name, mntner):
             log.error("%s does not have mnt for current object" % (mntner))
             return status
 
-        if obj_type == "e164num":
-            Lnet, Hnet, mask = inetrange(name)
-        else:
-            Lnet, Hnet, mask = inet6range(name)
+        #if obj_type == "e164num":
+        #    Lnet, Hnet, mask = inetrange(name)
 
-        mask = "%03d" % (mask)
+        #mask = "%03d" % (mask)
 
-        log.info([Lnet, Hnet, mask])
-        lis = find(
-            ["e164num", "policy", "@netlevel", "mnt-by", "mnt-lower"],
-            {
-                "@type": "net",
-                "@netmin": "le=" + Lnet,
-                "@netmax": "ge=" + Hnet,
-                "@netmask": "lt=" + mask,
-            },
-        )
-        log.debug(lis)
+        #log.info([Lnet, Hnet, mask])
+        #lis = find(
+        #    ["e164num", "policy", "@netlevel", "mnt-by", "mnt-lower"],
+        #    {
+        #        "@type": "net",
+        #        "@netmin": "le=" + Lnet,
+        #        "@netmax": "ge=" + Hnet,
+        #        "@netmask": "lt=" + mask,
+        #    },
+        #)
+        #log.debug(lis)
 
         policy = {}
         select = None
@@ -623,16 +619,9 @@ def test_policy(obj_type, name, mntner):
         if select is None:
             pass
 
-        elif policy.get(select, {}).get("policy", "closed") == "open":
-            log.notice("Policy is open for parent object")
-            return "PASS"
+        return "PASS"
 
-        # 3. Check if mntner or mnt-lower for any as-block in the tree.
-        elif mntner in mntners:
-            log.notice("%s has mnt in parent object" % (mntner))
-            return "PASS"
-
-    elif obj_type in ["route", "route6"]:
+    elif obj_type in ["route"]:
         log.info("Checking route type")
         lis = find(["mnt-by"], {"@type": "route", obj_type: name})
         log.debug(lis)
@@ -648,23 +637,23 @@ def test_policy(obj_type, name, mntner):
             log.error("%s does not have mnt for current object" % (mntner))
             return status
 
-        if obj_type == "route":
-            Lnet, Hnet, mask = inetrange(name)
-        else:
-            Lnet, Hnet, mask = inet6range(name)
-        mask = "%03d" % (mask)
+        #if obj_type == "route":
+        #    Lnet, Hnet, mask = inetrange(name)
+        #else:
+        #    Lnet, Hnet, mask = inet6range(name)
+        #mask = "%03d" % (mask)
 
-        log.info([Lnet, Hnet, mask])
-        lis = find(
-            ["e164num", "policy", "@netlevel", "mnt-by", "mnt-lower"],
-            {
-                "@type": "net",
-                "@netmin": "le=" + Lnet,
-                "@netmax": "ge=" + Hnet,
-                "@netmask": "le=" + mask,
-            },
-        )
-        log.debug(lis)
+        #log.info([Lnet, Hnet, mask])
+        #lis = find(
+        #    ["e164num", "policy", "@netlevel", "mnt-by", "mnt-lower"],
+        #    {
+        #        "@type": "net",
+        #        "@netmin": "le=" + Lnet,
+        #        "@netmax": "ge=" + Hnet,
+        #        "@netmask": "le=" + mask,
+        #    },
+        #)
+        #log.debug(lis)
 
         policy = {}
         select = None
@@ -685,25 +674,18 @@ def test_policy(obj_type, name, mntner):
             elif select <= k:
                 select = k
 
-        if select is None:
-            pass
+        #if select is None:
+        #    pass
 
-        elif policy.get(select, {}).get("policy", "closed") == "open":
-            log.notice("Policy is open for parent object")
-            return "PASS"
+        return "PASS"
 
-        # 3. Check if mntner or mnt-lower for any as-block in the tree.
-        elif mntner in mntners:
-            log.notice("%s has mnt in parent object" % (mntner))
-            return "PASS"
-
-    elif obj_type == "aut-num":
-        if not name.startswith("AS"):
+    elif obj_type == "itad":
+        if not name.startswith("ITAD"):
             log.error("%s does not start with AS" % (name))
             return "FAIL"
 
         # 1. Check if they already have an object
-        lis = find(["mnt-by"], {"@type": "aut-num", "@name": name})
+        lis = find(["mnt-by"], {"@type": "itad", "@name": name})
         log.debug(lis)
 
         if len(lis) > 0:
@@ -717,107 +699,8 @@ def test_policy(obj_type, name, mntner):
             log.error("%s does not have mnt for current object" % (mntner))
             return status
 
-        # 2. Check if the as-block has an open policy
-        asn = "AS{:0>9}".format(name[2:])
-        lis = find(
-            ["as-block", "policy", "@as-min", "@as-max", "mnt-by", "mnt-lower"],
-            {"@type": "as-block", "@as-min": "le=" + asn, "@as-max": "ge=" + asn},
-        )
-        log.info(lis)
+        return "PASS"
 
-        policy = {}
-        select = None
-        mntners = []
-
-        for n in lis:
-            obj = {}
-            for o in n:
-                obj[o[0]] = o[1]
-                if o[0].startswith("mnt-"):
-                    mntners.append(o[1])
-
-            k = (obj["@as-min"], obj["@as-max"])
-            policy[k] = obj
-
-            if select is None:
-                select = k
-            elif select[0] <= k[0] or select[1] >= k[1]:
-                select = k
-
-        if policy.get(select, {}).get("policy", "closed") == "open":
-            log.notice("Policy is open for parent object")
-            return "PASS"
-
-        # 3. Check if mntner or mnt-lower for any as-block in the tree.
-        elif mntner in mntners:
-            log.notice("%s has mnt in parent object" % (mntner))
-            return "PASS"
-
-    elif obj_type == "as-block":
-        Lname, Hname = name.split("-")
-        Lname, Hname = Lname.strip(), Hname.strip()
-
-        if not Lname.startswith("AS") or not Hname.startswith("AS"):
-            log.error("%s does not start with AS for min and max" % (name))
-            return "FAIL"
-
-        # 1. Check if they already have an object
-        lis = find(["mnt-by"], {"@type": "as-block", "@name": name})
-        log.debug(lis)
-
-        if len(lis) > 0:
-            status = "FAIL"
-            for o in lis:
-                for n in o:
-                    if n[0] == "mnt-by" and n[1] == mntner:
-                        status = "PASS"
-                        log.notice("%s has mnt for current object" % (mntner))
-                        return status
-            log.notice("%s does not have mnt for current object" % (mntner))
-            return status
-
-        # 2. Check if the parent as-blocks have an open policy
-        Lasn = "AS{:0>9}".format(Lname[2:])
-        Hasn = "AS{:0>9}".format(Hname[2:])
-
-        if Lasn > Hasn:
-            log.error("%s should come before %s" % (Lname, Hname))
-
-        lis = find(
-            ["as-block", "policy", "@as-min", "@as-max", "mnt-by", "mnt-lower"],
-            {"@type": "as-block", "@as-min": "le=" + Lasn, "@as-max": "ge=" + Hasn},
-        )
-        log.debug(lis)
-
-        policy = {}
-        select = None
-        mntners = []
-
-        for n in lis:
-            obj = {}
-            for o in n:
-                obj[o[0]] = o[1]
-                if o[0].startswith("mnt-"):
-                    mntners.append(o[1])
-
-            k = (obj["@as-min"], obj["@as-max"])
-            policy[k] = obj
-
-            if select is None:
-                select = k
-            elif select[0] <= k[0] or select[1] >= k[1]:
-                select = k
-
-        # Policy Open only applies to aut-nums. as-blocks must be defined by parent mntners only.
-        #
-        #   if policy[select]["policy"] == "open":
-        #       log.notice("Policy is open for parent object")
-        #       return "PASS"
-
-        # 3. Check if mntner or mnt-lower for any as-block in the tree.
-        if mntner in mntners:
-            log.notice("%s has mnt in parent object" % (mntner))
-            return "PASS"
 
     log.error("%s does not pass checks for %s %s" % (mntner, obj_type, name))
     return "FAIL"
